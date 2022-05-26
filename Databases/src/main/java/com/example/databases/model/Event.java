@@ -27,7 +27,7 @@ public class Event {
     private Integer eventId;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name="user_id")
     private User user;
 
     @Column(name="event_name")

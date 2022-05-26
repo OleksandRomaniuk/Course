@@ -8,11 +8,15 @@ import com.example.databases.service.AuthenticationService;
 import com.example.databases.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,33 +34,40 @@ public class AuthController {
         this.userService = userService;
     }
 
+    @GetMapping("/login")
+    public String loginUserForm(@ModelAttribute("loginDTO")LoginDTO loginDTO, Model model){
+        model.addAttribute("loginDTO", loginDTO);
+        return "user-login";
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO request){
+    public String login(@ModelAttribute("loginDTO")LoginDTO loginDTO,
+                        HttpServletResponse response){
         Map<String, String> res = new HashMap<>();
         try {
-            String token = authenticationService.login(request);
-            res.put("message","You have successfully logged in");
-            res.put("token", token);
-            res.put("role", userService.getUserByEmail(request.getEmail()).getUserRole().toString());
-            return ResponseEntity.ok(res);
+            String token = authenticationService.login(loginDTO);
+
+            int userId = userService.findUserByEmail(loginDTO.getEmail()).getId();
+            String path = "/api/user/"+userId;
+
+            Cookie cookie = new Cookie(HttpHeaders.AUTHORIZATION, token);
+            //cookie.setPath(path);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+
+            return "redirect:/api/user/profile";
+
         }catch (AuthenticationException ex) {
-            res.put("message", ex.getMessage());
-            return ResponseEntity.badRequest().body(res);
+
+            return "user-login";
         }catch (Exception exception) {
             exception.printStackTrace();
-            return ResponseEntity.badRequest().body(res);
+            return "user-login";
+            //return ResponseEntity.badRequest().body(res);
         }
 
     }
-
-    @PutMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, @CurrentUser CustomUserDetails user){
-        Map<String, String> res = new HashMap<>();
-        String message = authenticationService.logout(request, user);
-        res.put("message", message);
-        return ResponseEntity.ok(res);
-    }
-
     @PostMapping("/check")
     public ResponseEntity<?> checkTokenExpire(@RequestBody Map<String,String> request){
         Map<String, String> res = new HashMap<>();
@@ -70,4 +81,9 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/reset")
+    public String resetPassword(Model model){
+        model.addAttribute("loginDTO", new LoginDTO());
+        return "user-reset";
+    }
 }

@@ -30,7 +30,7 @@ public class User {
     private UserRole userRole;
 
     @OneToMany(mappedBy="user")
-    private Set<Event> event;
+    private Set<Event> eve;
 
     @Column(unique=true)
     @Email(message = "Email should be valid")

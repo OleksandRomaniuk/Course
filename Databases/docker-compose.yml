@@ -1,6 +1,6 @@
 # just run *docker compose up*
 # open pgAdmin on http://localhost:5050/
-# simple connection guide https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5
+# simple connection guide https://docker pstowardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5
 
 version: '3.8'
 services:
