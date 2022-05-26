@@ -33,7 +33,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'net.jodah', name: 'expiringmap', version: '0.5.9'
     implementation group: 'org.hibernate', name: 'hibernate-validator', version: '8.0.0.Alpha3'
-
+    implementation group: 'javax.mail', name: 'mail', version: '1.4'
 
 
 

@@ -3,6 +3,7 @@ package com.example.databases.service;
 import com.example.databases.exception.AdminDeleteException;
 import com.example.databases.exception.RegistrationException;
 import com.example.databases.model.*;
+import com.example.databases.model.DTO.GeneralResponseDTO;
 import com.example.databases.repository.*;
 import com.example.databases.security.jwt.JwtProvider;
 import com.example.databases.security.jwt.cache.event.OnUserLogoutSuccessEvent;
@@ -87,6 +88,22 @@ public class UserService {
         OnUserLogoutSuccessEvent logoutEventPublisher = new OnUserLogoutSuccessEvent(user.getEmail(),token);
         applicationEventPublisher.publishEvent(logoutEventPublisher);
         return "Account has been deleted";
+    }
+    public ResponseEntity<String> updateUserByToken(GeneralResponseDTO dto, HttpServletRequest request) {
+        String token = jwtProvider.getTokenFromRequest(request);
+        String email = jwtProvider.getLoginFromToken(token);
+        User user = userRepository.findUserByEmail(email);
+        if (user != null) {
+            user.setFirstName(dto.getFirstName());
+            user.setLastName(dto.getLastName());
+            user.setAdressa(dto.getAdressa());
+            user.setDate(dto.getDate());
+            user.setPhone_number1(dto.getPhone_number1());
+            user.setWork_place(dto.getWork_place());
+            user.setFaatherName(dto.getFaatherName());
+            return new ResponseEntity<String>(HttpStatus.OK);
+        } else return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+
     }
 
 

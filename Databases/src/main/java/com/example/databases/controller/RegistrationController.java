@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
+@RestControlle
 @RequestMapping("/api/registration")
 public class RegistrationController {
 
@@ -27,20 +27,5 @@ public class RegistrationController {
     }
 
     //method for registration
-    @PostMapping
-    ResponseEntity<?> registration(@RequestBody UserDTO userDTO){
-
-        Map<String, String> res = new HashMap<>();
-
-        try{
-            String result = registrationService.registration(userDTO);
-            res.put("message", result);
-            return ResponseEntity.status(201).body(res);
-        }
-        catch(RegistrationException e){
-            res.put("message",e.getMessage());
-            return ResponseEntity.badRequest().body(res);
-        }
-
-    }
+  V
 }
